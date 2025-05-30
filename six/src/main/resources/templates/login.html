@@ -27,6 +27,12 @@
         </div>
         <button type="submit" class="btn btn-primary w-100">로그인</button>
     </form>
+
+    <hr class="my-4">
+
+    <div class="d-grid gap-2">
+        <a href="/oauth2/authorization/naver" class="btn btn-success">네이버로 로그인</a>
+    </div>
 </div>
 
 <script>
@@ -58,7 +64,6 @@
             alert("요청 오류: " + err.message);
         }
     });
-
 </script>
 
 </body>

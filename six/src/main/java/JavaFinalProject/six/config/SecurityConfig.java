@@ -1,6 +1,7 @@
 package JavaFinalProject.six.config;
 
 import JavaFinalProject.six.security.JwtAuthenticationFilter;
+import JavaFinalProject.six.security.oauth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -31,33 +33,17 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf.disable())
-
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
-                .authorizeHttpRequests(auth -> auth
-                        // 공개 경로 (인증 불필요)
-                        .requestMatchers(
-                                "/", "/index.html", "/header.html", "/password.html",
-                                "/css/**", "/js/**",
-                                "/api/public/**",
-                                "/mypage.html"
-                        ).permitAll()
-
-                        // 인증 필요 경로
-                        .requestMatchers("/api/private/**").authenticated()
-
-                        // 그 외 모든 요청도 인증 필요
-                        .anyRequest().authenticated()
-                )
-
-                // JWT 필터를 UsernamePasswordAuthenticationFilter 앞에 추가
+        http.csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/", "/index.html", "/header.html", "/password.html", "/css/**",
+                                        "/js/**", "/api/public/**", "/mypage.html", "/callback.html", "/oauth/callback.html")
+                                .permitAll().requestMatchers("/api/private/**").authenticated().anyRequest()
+                                .authenticated()).oauth2Login(
+                        oauth -> oauth.loginPage("/api/public/users/login").defaultSuccessUrl("/")
+                                .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService)))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 }

@@ -1,5 +1,6 @@
 package JavaFinalProject.six.user;
 
+import JavaFinalProject.six.user.dto.Provider;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,6 +41,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @Column(nullable = false)
+    private Provider provider;
 
     public void changeProfile(String name, String nickname) {
         this.name = name;

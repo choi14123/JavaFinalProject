@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>소셜 로그인 처리 중...</title>
+</head>
+<body>
+<p>소셜 로그인 처리 중입니다. 잠시만 기다려주세요...</p>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const token = params.get("token");
+        console.log("토큰:", token);
+
+        if (token && token.startsWith("eyJ")) {
+            localStorage.setItem("jwt", token);
+            alert("소셜 로그인 성공!");
+            window.location.href = "/";
+        } else {
+            alert("로그인 실패: 토큰 없음");
+            window.location.href = "/login.html";
+        }
+    });
+</script>
+
+</body>
+</html>

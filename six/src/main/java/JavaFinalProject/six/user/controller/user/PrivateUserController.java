@@ -72,15 +72,18 @@ public class PrivateUserController {
     public ResponseEntity<?> changePassword(
             @RequestHeader(value = "Authorization", required = false) String authorizationHeader,
             @Valid @RequestBody PasswordChangeRequest request) {
-        extractEmailFromToken(authorizationHeader);
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            return ResponseEntity.badRequest().body("유효한 인증 토큰이 필요합니다.");
+        }
 
         String token = authorizationHeader.replace("Bearer ", "");
         String email = jwtTokenProvider.getEmail(token);
 
         userService.changePassword(email, request.getCurrentPassword(), request.getNewPassword());
-
         return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
+
 
     @DeleteMapping("/delete")
     public ResponseEntity<?> deleteUser( @RequestHeader(value = "Authorization", required = false) String authorizationHeader) {
