@@ -1,8 +1,11 @@
 package JavaFinalProject.six.emotion;
 
 import JavaFinalProject.six.emotion.dto.EmotionType;
+import JavaFinalProject.six.song.Song;
 import JavaFinalProject.six.user.User;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -28,7 +31,6 @@ public class EmotionHistory {
 
     private LocalDateTime createdAt;
 
-    @Column(columnDefinition = "TEXT")
-    private String videoJson; // JSON 형식의 추천 결과 저장
-
+    @OneToMany(mappedBy = "emotionHistory", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Song> songs = new ArrayList<>();
 }

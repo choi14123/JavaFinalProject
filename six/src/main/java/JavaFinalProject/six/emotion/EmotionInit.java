@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import JavaFinalProject.six.emotion.dto.EmotionType;
 import JavaFinalProject.six.emotion.repository.EmotionRepository;
 
+
 @Component
 @RequiredArgsConstructor
 public class EmotionInit implements CommandLineRunner {
@@ -16,9 +17,10 @@ public class EmotionInit implements CommandLineRunner {
     @Override
     public void run(String... args) {
         for (EmotionType type : EmotionType.values()) {
-            if (emotionRepository.findByName(type.name()) == null) {
-                Emotion emotion = new Emotion();
-                emotion.setName(type.name());
+            if (emotionRepository.findByEmotionType(type).isEmpty()) {
+                Emotion emotion = Emotion.builder()
+                        .emotionType(type)
+                        .build();
                 emotionRepository.save(emotion);
             }
         }

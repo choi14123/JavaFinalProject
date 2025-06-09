@@ -62,7 +62,6 @@
     }
 </script>
 
-<!-- 본문 시작 -->
 <div class="container mt-5">
     <h2 class="mb-4">감정 선택 기록</h2>
     <div th:if="${historyViews.isEmpty()}">
@@ -72,23 +71,17 @@
     <div th:each="history : ${historyViews}" class="mb-5">
         <h4 th:text="|감정: ${history.emotion} / 날짜: ${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm')}|"></h4>
 
-        <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
-            <div class="col" th:each="video : ${history.videos}">
-                <div class="card h-100">
-                    <img th:src="${video.thumbnailUrl}" class="card-img-top" alt="썸네일">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${video.title}"></h5>
-                        <div class="ratio ratio-16x9">
-                            <iframe th:src="@{${video.url.replace('watch?v=', 'embed/')}}" frameborder="0" allowfullscreen></iframe>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ul class="list-group mt-3" th:each="song : ${history.songs}">
+            <li class="list-group-item">
+                <span th:text="${song.title} + ' - ' + ${song.artist}"></span>
+                <a th:href="'https://www.youtube.com/results?search_query=' + ${#strings.replace(song.title + ' ' + song.artist, ' ', '+')}"
+                   target="_blank" class="btn btn-sm btn-outline-primary float-end">유튜브에서 검색</a>
+            </li>
+        </ul>
     </div>
 
     <div class="mt-4">
-        <a href="/mypage" class="btn btn-secondary">마이페이지로 돌아가기</a>
+        <a href="/api/public/users/mypage" class="btn btn-secondary">마이페이지로 돌아가기</a>
     </div>
 </div>
 

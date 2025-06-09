@@ -1,11 +1,9 @@
 package JavaFinalProject.six.emotion;
 
-import JavaFinalProject.six.song.Song;
+import JavaFinalProject.six.emotion.dto.EmotionType;
 import lombok.*;
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "emotions")
@@ -20,8 +18,9 @@ public class Emotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
-    
-    @OneToMany(mappedBy = "emotion")
-    private List<Song> songs = new ArrayList<>();
+    @Enumerated(EnumType.STRING) // Enum을 문자열로 저장
+    @Column(nullable = false, unique = true)
+    private EmotionType emotionType;
+
+    private String description; // 설명 등 추가 필드
 }
