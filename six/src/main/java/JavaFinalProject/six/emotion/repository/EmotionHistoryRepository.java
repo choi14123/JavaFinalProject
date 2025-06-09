@@ -12,4 +12,6 @@ public interface EmotionHistoryRepository extends JpaRepository<EmotionHistory, 
     List<EmotionHistory> findByUser(User user);
 
 	List<EmotionHistory> findByUserOrderByCreatedAtDesc(User user);
+
+    void deleteByUserId(Long id);
 }

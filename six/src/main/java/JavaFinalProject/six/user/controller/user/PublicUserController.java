@@ -8,6 +8,7 @@ import JavaFinalProject.six.user.dto.response.SignUpResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class PublicUserController {
     }
 
     @GetMapping("/password")
-    public String password(){
+    public String password() {
         return "password";
     }
 
@@ -53,5 +54,10 @@ public class PublicUserController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = userService.login(request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("")
+    public String index() {
+        return "index";
     }
 }

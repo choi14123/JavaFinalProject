@@ -1,5 +1,7 @@
 package JavaFinalProject.six.user.service;
 
+import JavaFinalProject.six.emotion.repository.EmotionHistoryRepository;
+import JavaFinalProject.six.emotion.repository.EmotionRepository;
 import JavaFinalProject.six.exception.InvalidPasswordException;
 import JavaFinalProject.six.user.Role;
 import JavaFinalProject.six.user.User;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmotionHistoryRepository emotionHistoryRepository;
 
     @Lazy
     private final JwtTokenProvider jwtTokenProvider;
@@ -90,7 +93,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
         // 소셜 로그인 사용자는 비밀번호 변경 불가
-        if (user.getProvider() != null) {
+        if (user.getProvider() ==  Provider.NAVER) {
             throw new IllegalStateException("소셜 로그인 사용자는 비밀번호를 변경할 수 없습니다.");
         }
 
@@ -110,11 +113,12 @@ public class UserService {
         userRepository.save(user);
     }
 
-
+    @Transactional
     public void userDelete(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
+        emotionHistoryRepository.deleteByUserId(user.getId());  // 자식 테이블 먼저 삭제
+        userRepository.deleteById(user.getId());                // 이후 부모 삭제
         userRepository.delete(user);
     }
 
