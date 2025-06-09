@@ -65,22 +65,21 @@
 <!-- 본문 시작 -->
 <div class="container mt-5">
     <h2 class="mb-4">감정 선택 기록</h2>
+    <div th:if="${historyViews.isEmpty()}">
+        <p>기록이 없습니다.</p>
+    </div>
 
-    <div th:if="${historyViews != null}">
-        <div th:each="entry : ${historyViews}" class="card mb-4">
-            <div class="card-header">
-                감정: <span th:text="${entry.emotion}"></span> &nbsp;|&nbsp;
-                날짜: <span th:text="${#temporals.format(entry.createdAt, 'yyyy-MM-dd HH:mm')}"></span>
-            </div>
-            <div class="d-flex flex-wrap justify-content-center gap-3">
-                <div class="row">
-                    <div class="col-md-4 mb-3" th:each="v : ${entry.videos}">
-                        <div class="card h-100">
-                            <img th:src="${v.thumbnailUrl}" class="card-img-top" alt="썸네일">
-                            <div class="card-body">
-                                <h5 class="card-title" th:text="${v.title}"></h5>
-                                <a th:href="${v.url}" class="btn btn-sm btn-primary w-100" target="_blank">유튜브에서 보기</a>
-                            </div>
+    <div th:each="history : ${historyViews}" class="mb-5">
+        <h4 th:text="|감정: ${history.emotion} / 날짜: ${#temporals.format(history.createdAt, 'yyyy-MM-dd HH:mm')}|"></h4>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4 mt-2">
+            <div class="col" th:each="video : ${history.videos}">
+                <div class="card h-100">
+                    <img th:src="${video.thumbnailUrl}" class="card-img-top" alt="썸네일">
+                    <div class="card-body">
+                        <h5 class="card-title" th:text="${video.title}"></h5>
+                        <div class="ratio ratio-16x9">
+                            <iframe th:src="@{${video.url.replace('watch?v=', 'embed/')}}" frameborder="0" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>
@@ -88,9 +87,8 @@
         </div>
     </div>
 
-    <div class="text-center mt-4">
-        <button type="button" class="btn btn-outline-primary" onclick="loadEmotionHistoryPage()">새로고침</button>
-        <a href="/api/public/users/mypage" class="btn btn-outline-secondary">마이페이지로 돌아가기</a>
+    <div class="mt-4">
+        <a href="/mypage" class="btn btn-secondary">마이페이지로 돌아가기</a>
     </div>
 </div>
 
