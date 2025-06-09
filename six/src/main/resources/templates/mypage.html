@@ -84,15 +84,85 @@
 
   <div class="text-center">
     <h5>오늘의 감정을 선택하고 음악을 추천받아보세요!</h5>
-    <a href="/api/emotion/select" class="btn btn-outline-primary mt-3">
+    <button class="btn btn-outline-primary mt-3" onclick="loadEmotionSelect()">
       감정 선택하러 가기
-    </a>
+    </button>
   </div>
+
+  <script>
+    async function loadEmotionSelect() {
+      const token = localStorage.getItem("jwt");
+
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        window.location.href = "/api/public/users/login";
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/emotion/select", {
+          method: "GET",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+        if (res.status === 200) {
+          const html = await res.text();
+          document.open();
+          document.write(html);
+          document.close();
+        } else if (res.status === 401 || res.status === 403) {
+          alert("인증이 만료되었거나 유효하지 않습니다.");
+          localStorage.removeItem("jwt");
+          window.location.href = "/api/public/users/login";
+        } else {
+          alert("서버 오류가 발생했습니다.");
+        }
+      } catch (err) {
+        alert("요청 실패: " + err.message);
+      }
+    }
+  </script>
+
+
   <br>
   <div class="mt-4">
-  	<a href="/api/emotion/history" class="btn btn-outline-secondary">감정 선택 기록 보기</a>
+    <button class="btn btn-outline-secondary" onclick="loadEmotionHistoryPage()">
+      감정 선택 기록 보기
+    </button>
   </div>
 </div>
+
+<script>
+  function loadEmotionHistoryPage() {
+    const token = localStorage.getItem("jwt");
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      window.location.href = "/api/public/users/login";
+      return;
+    }
+
+    fetch("/api/emotion/history", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
+      }
+    })
+            .then(res => {
+              if (!res.ok) throw new Error("접근 실패");
+              return res.text();
+            })
+            .then(html => {
+              document.open();
+              document.write(html);
+              document.close();
+            })
+            .catch(err => {
+              alert("감정 기록 페이지 로딩 실패: " + err.message);
+            });
+  }
+</script>
 
 <script>
   const token = localStorage.getItem("jwt");

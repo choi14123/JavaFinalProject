@@ -1,6 +1,6 @@
 package JavaFinalProject.six.emotion;
 
-import JavaFinalProject.six.user.User;
+import JavaFinalProject.six.song.Song;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -23,5 +23,5 @@ public class Emotion {
     private String name;
     
     @OneToMany(mappedBy = "emotion")
-    private List<JavaFinalProject.six.song.Song> songs = new ArrayList<>();
+    private List<Song> songs = new ArrayList<>();
 }
