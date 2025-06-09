@@ -64,32 +64,47 @@
 
 <!-- 본문 -->
 <div class="container mt-5">
-    <h2 class="mb-4 text-center" th:text="'[' + ${emotion} + '] 감정에 맞는 추천 노래'">추천 결과</h2>
+  <h2 class="mb-4" th:text="${emotion.name()} + ' 감정의 추천 결과'"></h2>
 
-    <div class="row justify-content-center" th:if="${videos != null}">
-        <div class="col-md-4 mb-4" th:each="video : ${videos}">
-            <div class="card h-100">
-                <img th:src="${video.thumbnailUrl}" class="card-img-top" alt="썸네일">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${video.title}">영상 제목</h5>
-                    <div class="ratio ratio-16x9 mb-2">
-                        <iframe th:src="'https://www.youtube.com/embed/' + ${#strings.substring(video.url, 32)}"
-                                title="YouTube video player" allowfullscreen></iframe>
-                    </div>
-                    <a th:href="${video.url}" target="_blank" class="btn btn-outline-primary w-100">YouTube에서 보기</a>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 버튼 영역 -->
+  <form th:action="@{/api/emotion/save}" method="post">
     <input type="hidden" name="emotion" th:value="${emotion}" />
     <input type="hidden" name="videoJson" th:value="${videoJson}" />
+    <button type="submit" class="btn btn-primary mb-4">이 결과 저장</button>
+  </form>
 
-    <div class="d-flex justify-content-center gap-3 mt-4">
-        <button type="button" class="btn btn-success" onclick="saveRecommendation()">이 추천 결과 저장하기</button>
-        <button type="button" class="btn btn-secondary" onclick="goToSelect()">다른 감정 선택하기</button>
+  <h4>단일 곡 추천</h4>
+  <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
+    <div class="col" th:each="video : ${singles}">
+      <div class="card h-100">
+        <img th:src="${video.thumbnailUrl}" class="card-img-top" alt="썸네일">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${video.title}"></h5>
+          <div class="ratio ratio-16x9">
+            <iframe th:src="@{'https://www.youtube.com/embed/' + ${#strings.substring(video.videoUrl, 32)}}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <h4>노래 모음 추천</h4>
+  <div class="row row-cols-1 row-cols-md-2 g-4">
+    <div class="col" th:each="video : ${playlists}">
+      <div class="card h-100">
+        <img th:src="${video.thumbnailUrl}" class="card-img-top" alt="썸네일">
+        <div class="card-body">
+          <h5 class="card-title" th:text="${video.title}"></h5>
+          <div class="ratio ratio-16x9">
+            <iframe th:src="@{'https://www.youtube.com/embed/' + ${#strings.substring(video.videoUrl, 32)}}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <a th:href="@{/api/emotion/select}" class="btn btn-secondary">다시 감정 선택</a>
+  </div>
 </div>
 
 <!-- Script -->
